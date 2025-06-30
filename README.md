@@ -1,107 +1,99 @@
-# Sensor de Conforto Ambiental com LoRaWAN e BLE
+# Sensor de Conforto Ambiental com LoRa e BLE (EA801 - Projeto 3)
 
 ## 📖 Sobre o Projeto
 
-Este projeto consiste no desenvolvimento de um sistema de monitoramento de conforto ambiental de dois nós, como parte da disciplina de Laboratório de Sistemas Embarcados (EA801).
+Este repositório contém o projeto final da disciplina EA801 - Laboratório de Sistemas Embarcados da UNICAMP. O objetivo foi desenvolver um sistema completo de monitoramento de conforto ambiental utilizando a placa BitDogLab (baseada no RP2040), com comunicação sem fio via LoRa e Bluetooth Low Energy (BLE).
 
-O **Nó Sensor (Transmissor)** é um dispositivo embarcado que utiliza uma placa BitDogLab (baseada em RP2040) para coletar dados de temperatura, umidade e nível de ruído. Ele oferece uma rica interface de usuário local com um display OLED, uma matriz de LEDs NeoPixel e um joystick para interação. Os dados coletados são transmitidos por duas vias de comunicação:
-
-* **LoRa:** Para comunicação de longo alcance e baixo consumo com um nó receptor.
-* **Bluetooth Low Energy (BLE):** Para comunicação de curto alcance com smartphones ou outros dispositivos compatíveis.
-
-O **Nó Receptor** é uma estação base simples que recebe os dados via LoRa, processa as informações e as exibe em um display OLED local.
+O sistema é composto por dois nós:
+* **Nó Transmissor:** Um dispositivo sensor que coleta dados de temperatura, umidade e nível de ruído. Ele possui uma interface de usuário rica com display OLED e matriz de LEDs para feedback visual e transmite os dados coletados.
+* **Nó Receptor:** Uma estação base que recebe os dados do transmissor via LoRa e os exibe em um display OLED local.
 
 ## ✨ Funcionalidades Principais
 
-* **Coleta de Múltiplos Sensores:** Medição de temperatura e umidade com o sensor AHT20 e nível de ruído com um microfone analógico.
-* **Comunicação Dupla:** Transmissão de dados simultânea via LoRa e Bluetooth Low Energy (BLE).
+* **Coleta de Múltiplos Sensores:** Medição de temperatura e umidade (`AHT20`) e nível de ruído (microfone ADC).
+* **Comunicação Dupla:** Transmissão de dados via LoRa para longo alcance e via Bluetooth Low Energy (BLE) para conexão local com smartphones.
 * **Interface Visual Rica:**
-    * **Display OLED:** Exibe dados em tempo real, status do sistema e gráficos históricos.
-    * **Matriz de LEDs (NeoPixel):** Fornece feedback visual intuitivo para o status da conexão, nível de ruído, temperatura e umidade.
-* **Classificação de Conforto:** O sistema analisa os dados localmente e os classifica como "Ideal", "Aceitável" ou "Alerta".
-* **Interatividade:** Um joystick permite ao usuário alternar entre os diferentes modos de visualização (ruído, temperatura, umidade).
+    * **Display OLED:** Exibe dados em tempo real, status do sistema e gráficos históricos das medições.
+    * **Matriz de LEDs NeoPixel:** Fornece feedback visual intuitivo para status de conexão, níveis de ruído, temperatura e umidade.
+* **Classificação de Conforto:** O sistema analisa os dados localmente e classifica o ambiente como "Ideal", "Aceitável" ou "Alerta".
+* **Interatividade:** Um joystick permite ao usuário alternar facilmente entre os diferentes modos de visualização no nó transmissor.
 
-## 🏗️ Arquitetura do Sistema
+## 📂 Estrutura de Arquivos
 
-O sistema é composto por dois nós principais:
+O repositório está organizado de forma a separar claramente a lógica de cada um dos nós do sistema.
 
-1.  **Nó Sensor (Transmissor):**
-    * Lê os sensores (AHT20, Microfone).
-    * Processa e classifica os dados.
-    * Exibe informações no OLED e na matriz de LEDs.
-    * Envia os dados via LoRa e anuncia via BLE.
-2.  **Nó Receptor (Base):**
-    * Fica em modo de escuta contínua (RX).
-    * Recebe os pacotes LoRa enviados pelo nó sensor.
-    * Decodifica a mensagem e exibe os dados de temperatura, umidade e ruído em seu display OLED.
+```
+.
+├── Receptor/
+│   ├── main.py           # Código principal do nó receptor
+│   └── libs/             # Bibliotecas necessárias para o receptor
+│       ├── ssd1306.py
+│       └── ulora.py
+├── Transmissor/
+│   ├── main.py           # Código principal do nó transmissor/sensor
+│   └── libs/             # Bibliotecas necessárias para o transmissor
+│       ├── ahtx0.py
+│       ├── ble_advertising.py
+│       ├── neopixel.py
+│       ├── ssd1306.py
+│       └── ulora.py
+├── .gitignore
+├── LICENSE
+└── README.md
+```
 
 ## 🛠️ Tecnologias e Hardware
 
-### Hardware Utilizado
-* **Placa de Desenvolvimento:** BitDogLab (ou qualquer placa baseada em RP2040 com os periféricos necessários).
-* **Sensores (Nó Sensor):**
+* **Hardware:**
+    * 2x Placas de Desenvolvimento BitDogLab (RP2040)
     * Sensor de Temperatura e Umidade: `AHT20`
-    * Sensor de Ruído: Microfone analógico conectado a uma porta ADC.
-* **Módulo de Comunicação:** Módulo LoRa `RFM95W`.
-* **Interface de Usuário (Nó Sensor):**
-    * Display `OLED SSD1306` (128x64 I2C).
-    * Matriz de LEDs `NeoPixel` 5x5.
-    * Joystick analógico e botões.
+    * Sensor de Ruído: Microfone analógico
+    * Módulo de Comunicação: LoRa `RFM95W`
+    * Display `OLED SSD1306` (128x64 I2C)
+    * Matriz de LEDs `NeoPixel` 5x5
+* **Software e Protocolos:**
+    * Firmware: `MicroPython`
+    * Comunicação Sem Fio: `LoRa` (ponto a ponto) e `Bluetooth Low Energy (BLE)`
 
-### Software e Protocolos
-* **Firmware:** `MicroPython`
-* **Comunicação Sem Fio:** `LoRa` (ponto a ponto) e `Bluetooth Low Energy (BLE)`.
-* **Bibliotecas MicroPython:** `ulora`, `ssd1306`, `ahtx0`, `neopixel`.
+## 🚀 Configuração e Instalação
 
-## ⚙️ Configuração e Instalação
+Siga os passos abaixo para colocar o sistema em funcionamento.
 
 ### Pré-requisitos
-* Duas placas BitDogLab/RP2040.
-* Firmware MicroPython instalado em ambas as placas.
-* Thonny IDE ou outra ferramenta para interagir com o REPL e transferir arquivos.
+* Duas placas BitDogLab/RP2040 com firmware MicroPython instalado.
+* Thonny IDE ou outra ferramenta para interagir com as placas e transferir os arquivos.
 
-### Bibliotecas Necessárias
-Antes de executar, certifique-se de que todas as bibliotecas listadas nos arquivos `main.py` estejam presentes na pasta `/lib` de ambas as placas. As principais são:
-* `ulora.py`
-* `ssd1306.py`
-* `ahtx0.py`
-* `neopixel.py`
-* `ble_advertising.py`
+### Passo 1: Obter os Arquivos
+Clone este repositório para o seu computador:
+```bash
+git clone [https://github.com/yagui-unicamp/EA801-Projeto-3.git](https://github.com/yagui-unicamp/EA801-Projeto-3.git)
+```
 
-### 1. Configuração do Nó Sensor (Transmissor)
-1.  Copie o código do transmissor para um arquivo `main.py`.
-2.  Transfira o `main.py` e as bibliotecas necessárias para a placa.
-3.  Verifique as configurações de pinos e LoRa no início do código, especialmente `RF95_FREQ` (ex: `915.0` MHz para as Américas).
+### Passo 2: Configuração do Nó Transmissor
+1.  Conecte uma das placas ao seu computador.
+2.  No Thonny IDE, navegue até a pasta `Transmissor` que você acabou de clonar.
+3.  Faça o upload de **todo o conteúdo** da pasta `Transmissor` (ou seja, o arquivo `main.py` e a pasta `libs` com seus arquivos) para a **raiz** da placa.
+4.  Reinicie a placa (pressione `Ctrl+D` no Thonny).
 
-### 2. Configuração do Nó Receptor
-1.  Copie o código do receptor para um arquivo `main.py`.
-2.  Transfira o `main.py` e as bibliotecas para a segunda placa.
-3.  Garanta que as configurações de LoRa (`RF95_FREQ`, `CLIENT_ADDRESS`, `SERVER_ADDRESS`) sejam compatíveis com as do transmissor.
+### Passo 3: Configuração do Nó Receptor
+1.  Conecte a segunda placa ao seu computador.
+2.  No Thonny IDE, navegue até a pasta `Receptor`.
+3.  Faça o upload de **todo o conteúdo** da pasta `Receptor` (o arquivo `main.py` e a pasta `libs`) para a **raiz** da segunda placa.
+4.  Reinicie a placa.
 
-## 🚀 Como Usar
+### Passo 4: Execução
+* O **Nó Transmissor** irá iniciar e procurar por uma conexão BLE. Use um app como o nRF Connect para se conectar a ele. Após a conexão, ele começará a transmitir os dados.
+* O **Nó Receptor** iniciará automaticamente em modo de escuta e exibirá os dados no OLED assim que recebê-los.
 
-### Nó Sensor
-1.  Energize a placa. O display mostrará "Iniciando..." e depois "Aguardando conexão BLE...". A matriz de LEDs piscará em azul.
-2.  Use um aplicativo de scanner BLE (como o nRF Connect) no seu celular para se conectar ao dispositivo chamado `BitDogLab-Sensor`.
-3.  Após a conexão BLE, a matriz de LEDs ficará verde e o display mostrará "Conectado!". O sistema começará a coletar e exibir os dados.
-4.  Use o **joystick para cima e para baixo** para alternar entre as telas de Ruído, Temperatura e Umidade.
-5.  Os dados serão enviados via LoRa e BLE a cada 2 segundos (definido em `SENSOR_UPDATE_INTERVAL`).
+## 📡 Estrutura da Mensagem LoRa
 
-### Nó Receptor
-1.  Energize a placa. O display mostrará "Receptor LoRa - Aguardando...".
-2.  O nó ficará automaticamente em modo de escuta.
-3.  Quando uma mensagem LoRa do nó sensor for recebida, os dados de temperatura, umidade e ruído serão exibidos no display OLED.
-
-## 📦 Estrutura da Mensagem LoRa
-
-O nó sensor envia os dados para o receptor em um formato de string simples, codificado em UTF-8.
+O transmissor envia os dados para o receptor como uma string formatada, codificada em UTF-8.
 
 **Formato:** `T:<temperatura>,H:<umidade>,D:<ruido>`
 
-**Exemplo:** `T:23.5,H:58.2,D:65.1`
-
-O receptor decodifica essa string para extrair os valores e exibi-los.
+**Exemplo de Payload:** `T:24.1,H:56.1,D:62.0`
 
 ## 👥 Autores
-* **Lucas Yagui** - 240211
-* **Gabriel Guimarães Dourado** - 177212
+
+* **Lucas Yagui** - [yagui-unicamp](https://github.com/yagui-unicamp)
+* **Gabriel Guimarães Dourado**
